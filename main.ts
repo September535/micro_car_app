@@ -56,6 +56,23 @@ function Little_Star () {
         music.play(music.tonePlayable(262, music.beat(BeatFraction.Double)), music.PlaybackMode.UntilDone)
     }
 }
+function rocker () {
+    if (STR == "0501") {
+        Acebott.moveTime(Acebott.Direction.forward, 0)
+    }
+    if (STR == "0502") {
+        Acebott.moveTime(Acebott.Direction.backward, 0)
+    }
+    if (STR == "0503") {
+        Acebott.moveTime(Acebott.Direction.left, 0)
+    }
+    if (STR == "0504") {
+        Acebott.moveTime(Acebott.Direction.forward, 0)
+    }
+    if (STR == "0500") {
+        Acebott.stopcar()
+    }
+}
 function New_Year () {
     if (STR == "0410") {
         music.play(music.tonePlayable(262, music.beat(BeatFraction.Half)), music.PlaybackMode.UntilDone)
@@ -121,8 +138,16 @@ function Jingle_bell () {
 }
 function emoji () {
     if (STR.includes("0801")) {
-        LED_m = STR.substr(4, STR.length - 4)
-        Acebott.ledMatrixShowHex(parseFloat(LED_m))
+        function LED() {
+            Acebott.singleheadlights(Acebott.RGBLights.ALL, 255, 0, 0)
+            basic.pause(200)
+            Acebott.singleheadlights(Acebott.RGBLights.ALL, 0, 255, 0)
+            basic.pause(200)
+            Acebott.singleheadlights(Acebott.RGBLights.ALL, 0, 0, 255)
+            basic.pause(200)
+            Acebott.singleheadlights(Acebott.RGBLights.ALL, 0, 0, 0)
+            basic.pause(200)
+        }
     }
 }
 function follow () {
