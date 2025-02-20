@@ -52,17 +52,18 @@ function Little_Star () {
     }
 }
 function rocker () {
+    speed = 30
     if (STR == "0501") {
-        Acebott.moveTime(Acebott.Direction.forward, 0)
+        Acebott.moveTime(Acebott.Direction.forward, speed)
     }
     if (STR == "0502") {
-        Acebott.moveTime(Acebott.Direction.backward, 0)
+        Acebott.moveTime(Acebott.Direction.backward, speed)
     }
     if (STR == "0503") {
-        Acebott.moveTime(Acebott.Direction.left, 0)
+        Acebott.moveTime(Acebott.Direction.left, speed)
     }
     if (STR == "0504") {
-        Acebott.moveTime(Acebott.Direction.right, 0)
+        Acebott.moveTime(Acebott.Direction.right, speed)
     }
     if (STR == "0500") {
         Acebott.stopcar()
@@ -138,6 +139,9 @@ function RGB_State () {
     }
     if (STR == "0703") {
         Acebott.singleheadlights(Acebott.RGBLights.RGB_L, parseFloat(R), parseFloat(G), parseFloat(B))
+    }
+    if (STR == "0700") {
+        Acebott.singleheadlights(Acebott.RGBLights.ALL, 0, 0, 0)
     }
 }
 bluetooth.onBluetoothDisconnected(function () {
@@ -239,14 +243,15 @@ function Have_a_farm () {
 bluetooth.onUartDataReceived(serial.delimiters(Delimiters.Hash), function () {
     STR = bluetooth.uartReadUntil(serial.delimiters(Delimiters.Hash))
     line()
-    Buzzer()
-    follow()
     avoidance()
+    follow()
+    Buzzer()
+    rocker()
+    New_Year()
+    RGB_State()
     Jingle_bell()
     Have_a_farm()
     Little_Star()
-    New_Year()
-    RGB_State()
 })
 function Buzzer () {
     if (STR == "0401") {
