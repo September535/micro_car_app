@@ -3,6 +3,28 @@ function DHT_t () {
         bluetooth.uartWriteString("06" + ("" + Math.round(Acebott.DHT11_getvalue(DigitalWritePin.P8, DHT11Type.Temperature_C))) + "#")
     }
 }
+function line () {
+    if (STR == "0101") {
+        if (Acebott.tracking(Acebott.MbPins.Right) >= 900 && Acebott.tracking(Acebott.MbPins.Left) >= 900) {
+            Acebott.stopcar()
+        }
+        if (Acebott.tracking(Acebott.MbPins.Right) <= 310 && Acebott.tracking(Acebott.MbPins.Left) <= 310) {
+            Acebott.stopcar()
+        }
+        if (Acebott.tracking(Acebott.MbPins.Right) >= 700 && Acebott.tracking(Acebott.MbPins.Right) <= 900) {
+            Acebott.motors(8, 60)
+        }
+        if (Acebott.tracking(Acebott.MbPins.Left) >= 700 && Acebott.tracking(Acebott.MbPins.Left) <= 900) {
+            Acebott.motors(60, 8)
+        }
+        if (Acebott.tracking(Acebott.MbPins.Left) >= 240 && Acebott.tracking(Acebott.MbPins.Left) <= 800 && (Acebott.tracking(Acebott.MbPins.Right) >= 240 && Acebott.tracking(Acebott.MbPins.Right) <= 700)) {
+            Acebott.moveTime(Acebott.Direction.forward, 30)
+        }
+    }
+    if (STR == "0101") {
+        Acebott.stopcar()
+    }
+}
 function Little_Star () {
     if (STR == "0408") {
         music.play(music.tonePlayable(262, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
@@ -71,23 +93,6 @@ bluetooth.onBluetoothConnected(function () {
     basic.showIcon(IconNames.Yes)
     basic.pause(2000)
 })
-function tracking () {
-    if (Acebott.tracking(Acebott.MbPins.Right) >= 900 && Acebott.tracking(Acebott.MbPins.Left) >= 900) {
-        Acebott.stopcar()
-    }
-    if (Acebott.tracking(Acebott.MbPins.Right) <= 310 && Acebott.tracking(Acebott.MbPins.Left) <= 310) {
-        Acebott.stopcar()
-    }
-    if (Acebott.tracking(Acebott.MbPins.Right) >= 700 && Acebott.tracking(Acebott.MbPins.Right) <= 900) {
-        Acebott.motors(8, 60)
-    }
-    if (Acebott.tracking(Acebott.MbPins.Left) >= 700 && Acebott.tracking(Acebott.MbPins.Left) <= 900) {
-        Acebott.motors(60, 8)
-    }
-    if (Acebott.tracking(Acebott.MbPins.Left) >= 240 && Acebott.tracking(Acebott.MbPins.Left) <= 800 && (Acebott.tracking(Acebott.MbPins.Right) >= 240 && Acebott.tracking(Acebott.MbPins.Right) <= 700)) {
-        Acebott.moveTime(Acebott.Direction.forward, 30)
-    }
-}
 bluetooth.onBluetoothDisconnected(function () {
     basic.showIcon(IconNames.No)
     Acebott.LCD1602_Clear()
@@ -121,25 +126,51 @@ function emoji () {
     }
 }
 function follow () {
-    if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) <= 10) {
-        Acebott.moveTime(Acebott.Direction.backward, 40)
+    if (STR == "0301") {
+        if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) <= 10) {
+            Acebott.moveTime(Acebott.Direction.backward, 40)
+        }
+        if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) >= 15 && Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) <= 20) {
+            Acebott.stopcar()
+        }
+        if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) >= 20 && Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) <= 25) {
+            Acebott.moveTime(Acebott.Direction.forward, 40)
+        }
+        if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) >= 25 && Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) <= 50) {
+            Acebott.moveTime(Acebott.Direction.forward, 40)
+        }
+        if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) >= 51) {
+            Acebott.stopcar()
+        }
     }
-    if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) >= 15 && Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) <= 20) {
-        Acebott.stopcar()
-    }
-    if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) >= 20 && Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) <= 25) {
-        Acebott.moveTime(Acebott.Direction.forward, 40)
-    }
-    if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) >= 25 && Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) <= 50) {
-        Acebott.moveTime(Acebott.Direction.forward, 40)
-    }
-    if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) >= 51) {
+    if (STR == "0300") {
         Acebott.stopcar()
     }
 }
 function DHT_h () {
     if (STR == "0701") {
         bluetooth.uartWriteString("07" + convertToText(Math.round(Acebott.DHT11_getvalue(DigitalWritePin.P8, DHT11Type.Humidity))) + "#")
+    }
+}
+function avoidance () {
+    if (STR == "0201") {
+        if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) <= 10) {
+            basic.pause(200)
+            Acebott.stopcar()
+            basic.pause(200)
+            if (Math.randomBoolean()) {
+                Acebott.moveTime(Acebott.Direction.right, 40)
+                basic.pause(200)
+            } else {
+                Acebott.moveTime(Acebott.Direction.left, 40)
+                basic.pause(200)
+            }
+        } else {
+            Acebott.moveTime(Acebott.Direction.forward, 40)
+        }
+    }
+    if (STR == "0200") {
+        Acebott.stopcar()
     }
 }
 function Have_a_farm () {
@@ -217,22 +248,6 @@ function LED () {
         led2 = 0
     }
 }
-function obstacle () {
-    if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) <= 10) {
-        basic.pause(200)
-        Acebott.stopcar()
-        basic.pause(200)
-        if (Math.randomBoolean()) {
-            Acebott.moveTime(Acebott.Direction.right, 40)
-            basic.pause(200)
-        } else {
-            Acebott.moveTime(Acebott.Direction.left, 40)
-            basic.pause(200)
-        }
-    } else {
-        Acebott.moveTime(Acebott.Direction.forward, 40)
-    }
-}
 function GAS () {
     if (STR == "0401") {
         bluetooth.uartWriteString("04" + ("" + Acebott.MQ4_Sensor(AnalogReadPin.P2)) + "#")
@@ -243,24 +258,9 @@ function PIR () {
         bluetooth.uartWriteString("05" + ("" + Acebott.PIRMotion(DigitalPin.P0)) + "#")
     }
 }
-let T = 0
-let H = 0
 let led2 = 0
 let LED_m = ""
 let STR = ""
 STR = ""
 basic.showIcon(IconNames.Heart)
 bluetooth.startUartService()
-loops.everyInterval(1000, function () {
-    H = Math.round(Acebott.DHT11_getvalue(DigitalWritePin.P8, DHT11Type.Humidity))
-    T = Math.round(Acebott.DHT11_getvalue(DigitalWritePin.P8, DHT11Type.Temperature_C))
-    Acebott.LCD1602_ShowString(10, 0, "G:")
-    Acebott.LCD1602_ShowNumber(12, 0, Acebott.MQ4_Sensor(AnalogReadPin.P2))
-    Acebott.LCD1602_ShowString(5, 0, "H:")
-    Acebott.LCD1602_ShowNumber(7, 0, H)
-    Acebott.LCD1602_ShowString(0, 0, "T:")
-    Acebott.LCD1602_ShowNumber(2, 0, T)
-    if (Acebott.MQ4_Sensor(AnalogReadPin.P2) >= 500) {
-        music.play(music.tonePlayable(262, music.beat(BeatFraction.Whole)), music.PlaybackMode.InBackground)
-    }
-})
