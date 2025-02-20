@@ -1,8 +1,3 @@
-function DHT_t () {
-    if (STR == "0601") {
-        bluetooth.uartWriteString("06" + ("" + Math.round(Acebott.DHT11_getvalue(DigitalWritePin.P8, DHT11Type.Temperature_C))) + "#")
-    }
-}
 function line () {
     if (STR == "0101") {
         if (Acebott.tracking(Acebott.MbPins.Right) >= 900 && Acebott.tracking(Acebott.MbPins.Left) >= 900) {
@@ -67,10 +62,25 @@ function rocker () {
         Acebott.moveTime(Acebott.Direction.left, 0)
     }
     if (STR == "0504") {
-        Acebott.moveTime(Acebott.Direction.forward, 0)
+        Acebott.moveTime(Acebott.Direction.right, 0)
     }
     if (STR == "0500") {
         Acebott.stopcar()
+    }
+    if (STR == "06130") {
+        speed = 20
+    }
+    if (STR == "06160") {
+        speed = 40
+    }
+    if (STR == "06190") {
+        speed = 60
+    }
+    if (STR == "06220") {
+        speed = 80
+    }
+    if (STR == "06255") {
+        speed = 100
     }
 }
 function New_Year () {
@@ -110,9 +120,28 @@ bluetooth.onBluetoothConnected(function () {
     basic.showIcon(IconNames.Yes)
     basic.pause(2000)
 })
+function RGB_State () {
+    if (STR.includes("0801")) {
+        R = STR.substr(4, STR.length - 4)
+    }
+    if (STR.includes("0802")) {
+        G = STR.substr(4, STR.length - 4)
+    }
+    if (STR.includes("0803")) {
+        B = STR.substr(4, STR.length - 4)
+    }
+    if (STR == "0701") {
+        Acebott.singleheadlights(Acebott.RGBLights.ALL, parseFloat(R), parseFloat(G), parseFloat(B))
+    }
+    if (STR == "0702") {
+        Acebott.singleheadlights(Acebott.RGBLights.RGB_R, parseFloat(R), parseFloat(G), parseFloat(B))
+    }
+    if (STR == "0703") {
+        Acebott.singleheadlights(Acebott.RGBLights.RGB_L, parseFloat(R), parseFloat(G), parseFloat(B))
+    }
+}
 bluetooth.onBluetoothDisconnected(function () {
     basic.showIcon(IconNames.No)
-    Acebott.LCD1602_Clear()
 })
 function Jingle_bell () {
     if (STR == "0409") {
@@ -136,20 +165,6 @@ function Jingle_bell () {
         music.play(music.tonePlayable(330, music.beat(BeatFraction.Double)), music.PlaybackMode.UntilDone)
     }
 }
-function emoji () {
-    if (STR.includes("0801")) {
-        function LED() {
-            Acebott.singleheadlights(Acebott.RGBLights.ALL, 255, 0, 0)
-            basic.pause(200)
-            Acebott.singleheadlights(Acebott.RGBLights.ALL, 0, 255, 0)
-            basic.pause(200)
-            Acebott.singleheadlights(Acebott.RGBLights.ALL, 0, 0, 255)
-            basic.pause(200)
-            Acebott.singleheadlights(Acebott.RGBLights.ALL, 0, 0, 0)
-            basic.pause(200)
-        }
-    }
-}
 function follow () {
     if (STR == "0301") {
         if (Acebott.UltrasonicDistance(DigitalPin.P15, DigitalWritePin.P14, DistanceUnit.CM) <= 10) {
@@ -170,11 +185,6 @@ function follow () {
     }
     if (STR == "0300") {
         Acebott.stopcar()
-    }
-}
-function DHT_h () {
-    if (STR == "0701") {
-        bluetooth.uartWriteString("07" + convertToText(Math.round(Acebott.DHT11_getvalue(DigitalWritePin.P8, DHT11Type.Humidity))) + "#")
     }
 }
 function avoidance () {
@@ -228,17 +238,15 @@ function Have_a_farm () {
 }
 bluetooth.onUartDataReceived(serial.delimiters(Delimiters.Hash), function () {
     STR = bluetooth.uartReadUntil(serial.delimiters(Delimiters.Hash))
-    LED()
+    line()
     Buzzer()
-    emoji()
-    Little_Star()
+    follow()
+    avoidance()
     Jingle_bell()
-    New_Year()
     Have_a_farm()
-    GAS()
-    DHT_t()
-    DHT_h()
-    PIR()
+    Little_Star()
+    New_Year()
+    RGB_State()
 })
 function Buzzer () {
     if (STR == "0401") {
@@ -263,28 +271,10 @@ function Buzzer () {
         music.play(music.tonePlayable(494, music.beat(BeatFraction.Half)), music.PlaybackMode.InBackground)
     }
 }
-function LED () {
-    if (STR == "0101") {
-        Acebott.setLed(DigitalWritePin.P1, SwitchStatus.ON)
-        led2 = 1
-    }
-    if (STR == "0100") {
-        Acebott.setLed(DigitalWritePin.P1, SwitchStatus.OFF)
-        led2 = 0
-    }
-}
-function GAS () {
-    if (STR == "0401") {
-        bluetooth.uartWriteString("04" + ("" + Acebott.MQ4_Sensor(AnalogReadPin.P2)) + "#")
-    }
-}
-function PIR () {
-    if (STR == "0501") {
-        bluetooth.uartWriteString("05" + ("" + Acebott.PIRMotion(DigitalPin.P0)) + "#")
-    }
-}
-let led2 = 0
-let LED_m = ""
+let B = ""
+let G = ""
+let R = ""
+let speed = 0
 let STR = ""
 STR = ""
 basic.showIcon(IconNames.Heart)
