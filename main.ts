@@ -328,7 +328,10 @@ RGB_status = 3
 speed = 50
 basic.showIcon(IconNames.Heart)
 bluetooth.startUartService()
-loops.everyInterval(10, function () {
+loops.everyInterval(0.3, function () {
+    RGB_State()
+})
+loops.everyInterval(0.2, function () {
     if (avoidance2 == 1) {
         avoidance()
     }
@@ -339,7 +342,4 @@ loops.everyInterval(10, function () {
         follow()
     }
     rocker()
-})
-loops.everyInterval(5, function () {
-    RGB_State()
 })
