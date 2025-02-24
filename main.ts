@@ -1,3 +1,8 @@
+function stop_state () {
+    avoidance2 = 0
+    line2 = 0
+    line2 = 0
+}
 function line () {
     if (Acebott.tracking(Acebott.MbPins.Right) >= 900 && Acebott.tracking(Acebott.MbPins.Left) >= 900) {
         Acebott.stopcar()
@@ -47,37 +52,31 @@ function Little_Star () {
     }
 }
 function rocker () {
-    if (speed != 0) {
-        if (STR == "0501") {
-            serial.writeLine("" + (speed))
-            Acebott.moveTime(Acebott.Direction.forward, speed)
-        }
-        if (STR == "0502") {
-            Acebott.moveTime(Acebott.Direction.backward, speed)
-        }
-        if (STR == "0503") {
-            Acebott.moveTime(Acebott.Direction.left, speed)
-        }
-        if (STR == "0504") {
-            Acebott.moveTime(Acebott.Direction.right, speed)
-        }
-        if (STR == "0500") {
-            Acebott.stopcar()
-        }
-    } else {
-    	
+    if (STR == "0501") {
+        stop_state()
+        Acebott.moveTime(Acebott.Direction.forward, speed)
+    }
+    if (STR == "0502") {
+        stop_state()
+        Acebott.moveTime(Acebott.Direction.backward, speed)
+    }
+    if (STR == "0503") {
+        stop_state()
+        Acebott.moveTime(Acebott.Direction.left, speed)
+    }
+    if (STR == "0504") {
+        stop_state()
+        Acebott.moveTime(Acebott.Direction.right, speed)
+    }
+    if (STR == "0500") {
+        Acebott.stopcar()
+        stop_state()
     }
     if (STR == "06130") {
-        speed = 20
-    }
-    if (STR == "06160") {
-        speed = 40
+        speed = 10
     }
     if (STR == "06190") {
-        speed = 60
-    }
-    if (STR == "06220") {
-        speed = 80
+        speed = 50
     }
     if (STR == "06255") {
         speed = 100
@@ -121,23 +120,21 @@ function State () {
         avoidance2 = 1
     }
     if (STR == "0200") {
+        Acebott.stopcar()
         avoidance2 = 0
     }
     if (STR == "0101") {
         line2 = 1
     }
-    if (STR == "0101") {
+    if (STR == "0100") {
+        Acebott.stopcar()
         line2 = 0
     }
     if (STR == "0301") {
         follow2 = 1
     }
     if (STR == "0300") {
-        follow2 = 0
-    }
-    if (STR == "0500") {
-        avoidance2 = 0
-        line2 = 0
+        Acebott.stopcar()
         follow2 = 0
     }
 }
@@ -146,26 +143,51 @@ bluetooth.onBluetoothConnected(function () {
     basic.pause(2000)
 })
 function RGB_State () {
-    if (STR.includes("0801")) {
-        R = STR.substr(4, STR.length - 4)
-    }
-    if (STR.includes("0802")) {
-        G = STR.substr(4, STR.length - 4)
-    }
-    if (STR.includes("0803")) {
-        B = STR.substr(4, STR.length - 4)
-    }
-    if (STR == "0701") {
+    if (RGB_status == 1) {
+        let R = ""
+        if (STR.includes("0801")) {
+            B = STR.substr(4, STR.length - 4)
+        }
+        if (STR.includes("0802")) {
+            G = STR.substr(4, STR.length - 4)
+        }
+        if (STR.includes("0803")) {
+            B = STR.substr(4, STR.length - 4)
+        }
         Acebott.singleheadlights(Acebott.RGBLights.ALL, parseFloat(R), parseFloat(G), parseFloat(B))
     }
+    if (RGB_status == 2) {
+        if (STR.includes("0801")) {
+            RGB_Left_R = STR.substr(4, STR.length - 4)
+        }
+        if (STR.includes("0802")) {
+            RGB_Left_G = STR.substr(4, STR.length - 4)
+        }
+        if (STR.includes("0803")) {
+            RGB_Left_B = STR.substr(4, STR.length - 4)
+        }
+        Acebott.singleheadlights(Acebott.RGBLights.RGB_L, parseFloat(RGB_Left_R), parseFloat(RGB_Left_G), parseFloat(RGB_Left_B))
+    }
+    if (RGB_status == 3) {
+        if (STR.includes("0801")) {
+            RGB_Right_R = STR.substr(4, STR.length - 4)
+        }
+        if (STR.includes("0802")) {
+            RGB_Right_G = STR.substr(4, STR.length - 4)
+        }
+        if (STR.includes("0803")) {
+            RGB_Right_B = STR.substr(4, STR.length - 4)
+        }
+        Acebott.singleheadlights(Acebott.RGBLights.RGB_R, parseFloat(RGB_Right_R), parseFloat(RGB_Right_G), parseFloat(RGB_Right_B))
+    }
+    if (STR == "0701") {
+        RGB_status = 1
+    }
     if (STR == "0702") {
-        Acebott.singleheadlights(Acebott.RGBLights.RGB_R, parseFloat(R), parseFloat(G), parseFloat(B))
+        RGB_status = 2
     }
     if (STR == "0703") {
-        Acebott.singleheadlights(Acebott.RGBLights.RGB_L, parseFloat(R), parseFloat(G), parseFloat(B))
-    }
-    if (STR == "0700") {
-        Acebott.singleheadlights(Acebott.RGBLights.ALL, 0, 0, 0)
+        RGB_status = 3
     }
 }
 bluetooth.onBluetoothDisconnected(function () {
@@ -259,7 +281,6 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.Hash), function () {
     STR = bluetooth.uartReadUntil(serial.delimiters(Delimiters.Hash))
     Buzzer()
     State()
-    rocker()
     New_Year()
     RGB_State()
     Jingle_bell()
@@ -289,16 +310,23 @@ function Buzzer () {
         music.play(music.tonePlayable(494, music.beat(BeatFraction.Half)), music.PlaybackMode.InBackground)
     }
 }
-let B = ""
+let RGB_Right_B = ""
+let RGB_Right_G = ""
+let RGB_Right_R = ""
+let RGB_Left_B = ""
+let RGB_Left_G = ""
+let RGB_Left_R = ""
 let G = ""
-let R = ""
+let B = ""
 let follow2 = 0
 let line2 = 0
 let avoidance2 = 0
 let speed = 0
+let RGB_status = 0
 let STR = ""
 STR = ""
-speed = 30
+RGB_status = 3
+speed = 50
 basic.showIcon(IconNames.Heart)
 bluetooth.startUartService()
 loops.everyInterval(100, function () {
@@ -311,4 +339,5 @@ loops.everyInterval(100, function () {
     if (follow2 == 1) {
         follow()
     }
+    rocker()
 })
