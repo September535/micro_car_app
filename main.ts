@@ -1,7 +1,7 @@
 function stop_state () {
     avoidance2 = 0
     line2 = 0
-    line2 = 0
+    follow2 = 0
 }
 function line () {
     if (Acebott.tracking(Acebott.MbPins.Right) >= 900 && Acebott.tracking(Acebott.MbPins.Left) >= 900) {
@@ -282,7 +282,6 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.Hash), function () {
     Buzzer()
     State()
     New_Year()
-    RGB_State()
     Jingle_bell()
     Have_a_farm()
     Little_Star()
@@ -329,7 +328,7 @@ RGB_status = 3
 speed = 50
 basic.showIcon(IconNames.Heart)
 bluetooth.startUartService()
-loops.everyInterval(100, function () {
+loops.everyInterval(10, function () {
     if (avoidance2 == 1) {
         avoidance()
     }
@@ -340,4 +339,7 @@ loops.everyInterval(100, function () {
         follow()
     }
     rocker()
+})
+loops.everyInterval(5, function () {
+    RGB_State()
 })
