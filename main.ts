@@ -47,22 +47,25 @@ function Little_Star () {
     }
 }
 function rocker () {
-    speed = 30
-    rocker2 = 1
-    if (STR == "0501") {
-        Acebott.moveTime(Acebott.Direction.forward, speed)
-    }
-    if (STR == "0502") {
-        Acebott.moveTime(Acebott.Direction.backward, speed)
-    }
-    if (STR == "0503") {
-        Acebott.moveTime(Acebott.Direction.left, speed)
-    }
-    if (STR == "0504") {
-        Acebott.moveTime(Acebott.Direction.right, speed)
-    }
-    if (STR == "0500") {
-        Acebott.stopcar()
+    if (speed != 0) {
+        if (STR == "0501") {
+            serial.writeLine("" + (speed))
+            Acebott.moveTime(Acebott.Direction.forward, speed)
+        }
+        if (STR == "0502") {
+            Acebott.moveTime(Acebott.Direction.backward, speed)
+        }
+        if (STR == "0503") {
+            Acebott.moveTime(Acebott.Direction.left, speed)
+        }
+        if (STR == "0504") {
+            Acebott.moveTime(Acebott.Direction.right, speed)
+        }
+        if (STR == "0500") {
+            Acebott.stopcar()
+        }
+    } else {
+    	
     }
     if (STR == "06130") {
         speed = 20
@@ -166,6 +169,7 @@ function RGB_State () {
     }
 }
 bluetooth.onBluetoothDisconnected(function () {
+    Acebott.stopcar()
     basic.showIcon(IconNames.No)
 })
 function Jingle_bell () {
@@ -291,10 +295,10 @@ let R = ""
 let follow2 = 0
 let line2 = 0
 let avoidance2 = 0
-let rocker2 = 0
 let speed = 0
 let STR = ""
 STR = ""
+speed = 30
 basic.showIcon(IconNames.Heart)
 bluetooth.startUartService()
 loops.everyInterval(100, function () {
